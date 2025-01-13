@@ -185,6 +185,8 @@ fig.update_layout(
     xaxis=dict(tickmode='linear', dtick=5),  # Better scale on x-axis with 5-year intervals
     yaxis=dict(tickformat=".2f")             # Format y-axis for two decimal points
 )
-
+#Specify the path to save the figure
+data_path = os.path.join(current_dir, "figure4.html")
+fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
