@@ -306,3 +306,47 @@ data_path = os.path.join(current_dir, "figures", "figure7.html")
 fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
+
+
+"""
+# - EXERCISE 8/10 - # 
+
+8.Create a visualization that is none of the following: map, bar chart, scatter plot, pie chart,
+doughnut chart, line chart, box plot, density plot, histogram
+
+10. Create one visualization with ChatGPT Pro / Microsoft Copilot (or any similar tool). Include
+the visualization as you download it from the AI assistant without any further processing /
+improving it. Document your conversation (screenshots!) in the appendix.
+"""
+# NOTE: The following lines has been done by an exstensive use of ChatGPT.
+# Explicit new data path
+data_path = os.path.join(current_dir, "datasets", "willingness-climate-action.csv")
+
+# Import dataset
+df = get_data(data_path)
+
+# Print Check
+print(df.columns)
+print(df.head(5))
+print('\n \n')
+
+# Filter out rows with missing values
+df_cleaned = df.dropna()
+
+# Create the violin plot
+fig = px.violin(df_cleaned, 
+                x='World regions according to OWID', 
+                y='Willingness to give 1% of income', 
+                box=True, 
+                points="all",
+                title="Distribution of Willingness to Give 1% of Income to Combat Climate Change by Region",
+                labels={"Willingness to give 1% of income": "Willingness to Give 1% of Income", 
+                        "World regions according to OWID": "Region"})
+
+# Show the plot
+fig.show()
+# - CHATGPT CODE ENDS HERE - #
+
+#Specify the path to save the figure
+data_path = os.path.join(current_dir, "figures", "figure8.html")
+fig.write_html(data_path)
