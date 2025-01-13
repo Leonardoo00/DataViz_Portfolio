@@ -101,7 +101,8 @@ fig_major.update_layout(
 fig_major.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey', tickangle=45, ticks='outside')
 fig_major.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 
-fig_major.write_html("figure2.html")
+data_path = os.path.join(current_dir, "figures", "figure2.html")
+fig_major.write_html(data_path)
 fig_major.show()
 
 # Plot 2: Energy Consumption by Minor Sources
@@ -152,11 +153,11 @@ df = get_data(data_path)
 # print(df.head(5))
 
 # Filter for the 'World' series
-df = df[df['Country'] == 'World']
+df_world = df[df['Country'] == 'World']
 
 # Keep only the 'Country' column and all number columns (years)
-year_columns = [col for col in df.columns if col.isdigit()]
-final_df = df[['Country'] + year_columns]
+year_columns = [col for col in df_world.columns if col.isdigit()]
+final_df = df_world[['Country'] + year_columns]
 
 # Check for NaN values
 # NaN_values = final_df.isna().sum().sum()
@@ -186,7 +187,46 @@ fig.update_layout(
     yaxis=dict(tickformat=".2f")             # Format y-axis for two decimal points
 )
 #Specify the path to save the figure
-data_path = os.path.join(current_dir, "figure4.html")
+data_path = os.path.join(current_dir, "figures", "figure4.html")
+fig.write_html(data_path)
+fig.show()
+# - CHATGPT CODE ENDS HERE - #
+
+# - EXERCISE 7 - #
+# Filter to keep only 'Country' and year columns
+year_columns = [col for col in df.columns if col.isdigit()]
+filtered_df = df[['Country'] + year_columns]
+
+# Remove the 'World' observation
+filtered_df = filtered_df[filtered_df['Country'] != 'World']
+
+# Print Check
+#print(filtered_df.head(5))
+
+# Melt the DataFrame to long format for the map
+melted_df = filtered_df.melt(id_vars='Country', var_name='Year', value_name='TemperatureChange')
+
+# NOTE: The following lines has been done by an exstensive use of ChatGPT.
+# Create the choropleth map with an improved color scale
+fig = px.choropleth(
+    melted_df,
+    locations="Country",
+    locationmode="country names",
+    color="TemperatureChange",
+    hover_name="Country",
+    animation_frame="Year",
+    color_continuous_scale="YlOrRd",  # Yellow to Red for better contrast
+    title="Global Temperature Change Over Time by Country (°C)"
+)
+
+# Update layout for better appearance
+fig.update_layout(
+    geo=dict(showframe=False, showcoastlines=False, projection_type='equirectangular'),
+    coloraxis_colorbar=dict(title="Temperature Change (°C)")
+)
+
+#Specify the path to save the figure
+data_path = os.path.join(current_dir, "figures", "figure6.html")
 fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
