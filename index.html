@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataViz Portfolio</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1, h2, h3 { color: #333; }
+        img { width: 80%; display: block; margin: 20px auto; }
+        iframe { width: 100%; height: 600px; border: none; }
+    </style>
+</head>
+
+<body>
+
+    <h1>DataViz</h1>
+    <p><strong>Author:</strong> Leonardo Mario di Gennaro</p>
+    <p><strong>Date:</strong> January 2025</p>
+
+    <h2>Introduction</h2>
+    <p>This portfolio is built as part of the Data Visualization exam. The graphs displayed follow the guidelines provided by the Professor.</p>
+
+    <h2>Data & Methodology</h2>
+    <p>
+        Python has been selected as the primary programming language due to its simplicity and extensive support for external libraries.  
+        In particular, <a href="https://plotly.com/python/" target="_blank">Plotly</a> was chosen for its robust and comprehensive capabilities in data visualization.
+    </p>
+    <p>See full code here: <a href="https://github.com/Leonardoo00/DataViz_Portfolio" target="_blank">GitHub Repository</a></p>
+
+    <h2>Exercise 1</h2>
+    <p>
+        <em>Figure 1</em> is an area chart showing the distribution of global energy sources from 1960 to 2014, stacked year by year. The legend and title are correctly presented, providing context to the reader.  
+        However, the y-axis lacks any reference to the unit measurement used. Are the values shown in percentage or absolute production? This omission reduces the effectiveness and readability of the chart.  
+        The color choice also reduces clarity due to overlapping areas.
+    </p>
+
+    <ol>
+        <li>Use a more distinct color palette.</li>
+        <li>Specify the unit of measurement in the title.</li>
+        <li>Add labels to the y-axis.</li>
+        <li>Include gridlines to improve readability.</li>
+    </ol>
+
+    <!-- Display Static Figure 1 (JPG) -->
+    <figure>
+        <img src="images/figure1.jpg" alt="Figure 1: Energy Sources Distribution (1960–2014)">
+        <figcaption>Figure 1: Energy Sources Distribution (1960–2014)</figcaption>
+    </figure>
+
+    <h2>Exercise 2</h2>
+    <p>
+        <em>Figure 2</em> represents a personal revision of the figure shown in the previous section. Improvements include a more distinct color palette, clearer y-axis labels, and the inclusion of gridlines.  
+        Additionally, the unit of measurement has been specified in the title. Notably, the data source differs from that used in <em>Figure 1</em>, providing a broader and potentially more accurate representation of global energy production.
+    </p>
+
+    <!-- Embed Interactive Plotly Graph for Figure 2 -->
+    <iframe src="graph2.html"></iframe>
+
+    <h2>References</h2>
+    <p>
+        Figure 2: Energy Institute - Statistical Review of World Energy (2024) – with major processing by Our World in Data.  
+        See: <em>energy-consumption-by-source-and-country.csv</em>
+    </p>
+
+</body>
+</html>
