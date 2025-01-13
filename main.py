@@ -7,7 +7,7 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(current_dir, "datasets", "energy-consumption-by-source-and-country.csv")
 
-def get_data(data_path):
+def get_data(data_path, skiprows=None):
     """
     Reads a CSV file and returns its contents as a DataFrame.
 
@@ -18,7 +18,10 @@ def get_data(data_path):
     pd.DataFrame: The contents of the CSV file as a DataFrame.
     """
     try:
-        data = pd.read_csv(data_path)
+        if skiprows:
+            data = pd.read_csv(data_path, skiprows=skiprows)
+        else:
+            data = pd.read_csv(data_path)
         return data
     except FileNotFoundError:
         print(f"ERROR -  The file '{data_path}' does not exist.")
@@ -233,5 +236,73 @@ fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
-
 # - EXERCISE 7 - #
+# Explicit new data path 
+data_path = os.path.join(current_dir, "datasets", "API_EG.FEC.RNEW.ZS_DS2_en_csv_v2_3673.csv")
+
+# Import dataset 
+df = get_data(data_path, skiprows=4) # Skip first 4 rows that contains metadata
+
+# Print Check
+print(df.columns)
+print(df.head(5))
+print('\n \n')
+
+# Filter for the 'World' observation and data from 1990 onwards
+world_data = df[df['Country Name'] == 'World']
+world_data = world_data[['Country Name'] + [str(year) for year in range(1990, 2024)]]
+
+# Convert the DataFrame to long format for plotting
+melted_df = world_data.melt(id_vars='Country Name', var_name='Year', value_name='Value')
+melted_df['Year'] = melted_df['Year'].astype(int)
+
+# Drop missing values
+melted_df.dropna(inplace=True)
+
+# Identify the year with the highest value and highlight it
+max_value = melted_df['Value'].max()
+max_value_year = melted_df[melted_df['Value'] == max_value]['Year'].values[0]
+melted_df['Color'] = melted_df['Year'].apply(lambda x: 'red' if x == max_value_year else 'black')
+
+# NOTE: The following lines has been done by an exstensive use of ChatGPT.
+# Create the bar chart
+fig = px.bar(
+    melted_df,
+    x='Year',
+    y='Value',
+    color='Color',
+    color_discrete_map={'black': 'black', 'red': 'red'},
+    title='Global Renewable Energy Consumption (1990 Onwards)',
+    labels={'Value': 'Renewable Energy Consumption (%)'}
+)
+
+# Add annotation to highlight the maximum bar's value in red on the y-axis
+fig.add_annotation(
+    x=max_value_year,
+    y=max_value,
+    text=f"{max_value:.2f}%",
+    showarrow=True,
+    arrowhead=2,
+    ax=0,
+    ay=-40,
+    font=dict(color="red", size=12),
+    arrowcolor="red"
+)
+
+# Maximize data-ink ratio
+fig.update_layout(
+    plot_bgcolor='white',
+    showlegend=False,
+    xaxis=dict(showgrid=False, zeroline=False, linecolor='black', ticks='outside'),
+    yaxis=dict(showgrid=False, zeroline=False, linecolor='black', ticks='outside'),
+    margin=dict(l=20, r=20, t=40, b=20)
+)
+
+# Simplify bar appearance
+fig.update_traces(marker=dict(opacity=0.9))
+
+#Specify the path to save the figure
+data_path = os.path.join(current_dir, "figures", "figure7.html")
+fig.write_html(data_path)
+fig.show()
+# - CHATGPT CODE ENDS HERE - #
