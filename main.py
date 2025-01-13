@@ -138,6 +138,8 @@ fig_minor.update_layout(
 fig_minor.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey', tickangle=45, ticks='outside')
 fig_minor.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 
+data_path = os.path.join(current_dir, "figures", "figure3.html")
+fig_minor.write_html(data_path)
 fig_minor.show()
 # - CHATGPT CODE ENDS HERE - #
 
@@ -192,7 +194,7 @@ fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
-# - EXERCISE 7 - #
+# - EXERCISE 6 - #
 # Filter to keep only 'Country' and year columns
 year_columns = [col for col in df.columns if col.isdigit()]
 filtered_df = df[['Country'] + year_columns]
@@ -230,3 +232,6 @@ data_path = os.path.join(current_dir, "figures", "figure6.html")
 fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
+
+
+# - EXERCISE 7 - #
