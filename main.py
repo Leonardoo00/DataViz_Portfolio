@@ -1,9 +1,11 @@
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-import logging #TODO: implement logging code
+import os
 
-data_path = "/Users/leonardo/Desktop/Ongoing_Courses/Data_Visualization/progetto/energy_production_dataset/energy-consumption-by-source-and-country.filtered/energy-consumption-by-source-and-country.csv"
+# Dynamically set the file path to the same directory as the script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(current_dir, "datasets", "energy-consumption-by-source-and-country.csv")
 
 def get_data(data_path):
     """
@@ -23,15 +25,16 @@ def get_data(data_path):
     except Exception as e:
         print(f"The followingg error occurred: {e}")
 
+# - EXERCISE 2 - #
 # Import dataset 
 df = get_data(data_path)
 
 # Print Check
-print(df.columns)
-print(df.head(5))
+# print(df.columns)
+# print(df.head(5))
 
 # Check for NaN values
-# NaN_values = data.isna().sum().sum()
+# NaN_values = df.isna().sum().sum()
 # print(f"The number of NaN values is {NaN_values}")
 
 # Drop useless column 
@@ -65,36 +68,6 @@ df_filtered.columns = ['Year'] + list(df_filtered.columns[1:])
 df_filtered['Year'] = pd.to_numeric(df_filtered['Year'], errors='coerce')
 
 # NOTE: The following lines has been done by an exstensive use of ChatGPT.
-
-# TODO: DECIDE ON TABLE TEST 
-# # Calculate the latest percentage of each energy source for the last year
-# latest_year = df_filtered['Year'].iloc[-1]
-# latest_data = df_filtered[df_filtered['Year'] == latest_year].iloc[0, 1:]
-
-# # Prepare data for the table
-# sources = [source.split(' consumption')[0] for source in latest_data.index]
-# percentages = [f"{value:.2f}%" for value in latest_data.values]
-
-# # Create a table to display the percentages
-# table_fig = go.Figure(data=[go.Table(
-#     header=dict(values=["<b>Energy Source</b>", "<b>Percentage in {}</b>".format(int(latest_year))],
-#                 fill_color='lightgrey',
-#                 align='left',
-#                 font=dict(size=14, family='Arial Black')),
-#     cells=dict(values=[sources, percentages],
-#                fill_color='white',
-#                align='left',
-#                font=dict(size=12, family='Arial'))
-# )])
-
-# table_fig.update_layout(
-#     title_text=f"<b>Energy Consumption by Source in {int(latest_year)}</b>",
-#     title_font=dict(size=20, family='Arial Black'),
-#     margin=dict(l=20, r=20, t=40, b=20)
-# )
-
-# table_fig.show()
-
 # Plot 1: Full Energy Consumption by Major Sources
 fig_major = px.area(
     df_filtered,
@@ -128,7 +101,7 @@ fig_major.update_layout(
 fig_major.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey', tickangle=45, ticks='outside')
 fig_major.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 
-fig_major.write_html("interactive_plot.html")
+fig_major.write_html("figure2.html")
 fig_major.show()
 
 # Plot 2: Energy Consumption by Minor Sources
@@ -167,32 +140,51 @@ fig_minor.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 fig_minor.show()
 # - CHATGPT CODE ENDS HERE - #
 
-exit()
+# - EXERCISE 4/5 - #
 
-# EXERCISE 2
-# Load the dataset
-file_path = '/Users/leonardo/Desktop/Ongoing_Courses/Data_Visualization/progetto/natural_disaster_dataset/decadal-average-annual-number-of-deaths-from-disasters.csv'
-df = pd.read_csv(file_path)
+# Explicit new data path 
+data_path = os.path.join(current_dir, "datasets", "Indicator_3_1_Climate_Indicators_Annual_Mean_Global_Surface_Temperature_577579683071085080.csv")
+# Import dataset 
+df = get_data(data_path)
 
-# Create a choropleth map using Plotly
-fig = px.choropleth(
-    df,
-    locations="Country name",
-    locationmode="country names",
-    color="Number of deaths from disasters",
-    hover_name="Country name",
-    color_continuous_scale="Reds",
-    labels={"Number of deaths from disasters": "Annual Deaths from Disasters"},
-    title="Decadal Average: Annual Number of Deaths from Disasters (2020)",
-    range_color=[df["Number of deaths from disasters"].min(), df["Number of deaths from disasters"].max()]
+# Print Check
+# print(df.columns)
+# print(df.head(5))
+
+# Filter for the 'World' series
+df = df[df['Country'] == 'World']
+
+# Keep only the 'Country' column and all number columns (years)
+year_columns = [col for col in df.columns if col.isdigit()]
+final_df = df[['Country'] + year_columns]
+
+# Check for NaN values
+# NaN_values = final_df.isna().sum().sum()
+# print(f"The number of NaN values is {NaN_values}")
+
+# Convert year columns to integers for proper plotting
+year_columns_int = [int(year) for year in year_columns]
+temperature_values = final_df.iloc[0, 1:].values  # Exclude 'Country' column
+
+# NOTE: The following lines has been done by an exstensive use of ChatGPT.
+# Create a black and white line chart
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=year_columns_int,
+    y=temperature_values,
+    mode='lines',
+    line=dict(color='black')
+))
+
+fig.update_layout(
+    title='Global Surface Temperature Change Over Time (Measured in °C)',
+    xaxis_title='Year',
+    yaxis_title='Temperature Change (°C)',
+    template='plotly_white',
+    xaxis=dict(tickmode='linear', dtick=5),  # Better scale on x-axis with 5-year intervals
+    yaxis=dict(tickformat=".2f")             # Format y-axis for two decimal points
 )
 
-fig.update_geos(showcountries=True, showcoastlines=True, showland=True, fitbounds="locations")
-fig.update_layout(coloraxis_colorbar={
-    'title': 'Deaths',
-    'ticks': 'outside',
-    'tickvals': [1, 10, 100, 1000, 10000, 100000],
-    'ticktext': ['1', '10', '100', '1,000', '10,000', '100,000']
-})
-
 fig.show()
+# - CHATGPT CODE ENDS HERE - #
