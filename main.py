@@ -5,7 +5,6 @@ import os
 
 # Dynamically set the file path to the same directory as the script
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(current_dir, "datasets", "energy-consumption-by-source-and-country.csv")
 
 def get_data(data_path, skiprows=None):
     """
@@ -28,8 +27,12 @@ def get_data(data_path, skiprows=None):
     except Exception as e:
         print(f"The followingg error occurred: {e}")
 
+"""
 # - EXERCISE 2 - #
+Create an improved version of the “bad/manipulative” visualization.
+"""
 # Import dataset 
+data_path = os.path.join(current_dir, "datasets", "energy-consumption-by-source-and-country.csv")
 df = get_data(data_path)
 
 # Print Check
@@ -104,8 +107,8 @@ fig_major.update_layout(
 fig_major.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey', tickangle=45, ticks='outside')
 fig_major.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 
-data_path = os.path.join(current_dir, "figures", "figure2.html")
-fig_major.write_html(data_path)
+# data_path = os.path.join(current_dir, "figures", "figure2.html")
+# fig_major.write_html(data_path)
 fig_major.show()
 
 # Plot 2: Energy Consumption by Minor Sources
@@ -141,16 +144,21 @@ fig_minor.update_layout(
 fig_minor.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey', tickangle=45, ticks='outside')
 fig_minor.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 
-data_path = os.path.join(current_dir, "figures", "figure3.html")
-fig_minor.write_html(data_path)
+# data_path = os.path.join(current_dir, "figures", "figure3.html")
+# fig_minor.write_html(data_path)
 fig_minor.show()
 # - CHATGPT CODE ENDS HERE - #
 
+"""
 # - EXERCISE 4/5 - #
 
-# Explicit new data path 
-data_path = os.path.join(current_dir, "datasets", "Indicator_3_1_Climate_Indicators_Annual_Mean_Global_Surface_Temperature_577579683071085080.csv")
+Create a viz about climate change for use in social media and write a hypothetical LinkedIn
+post to accompany this viz.
+
+Create a black-and-white visualization (no grey levels)
+"""
 # Import dataset 
+data_path = os.path.join(current_dir, "datasets", "Indicator_3_1_Climate_Indicators_Annual_Mean_Global_Surface_Temperature_577579683071085080.csv")
 df = get_data(data_path)
 
 # Print Check
@@ -192,12 +200,16 @@ fig.update_layout(
     yaxis=dict(tickformat=".2f")             # Format y-axis for two decimal points
 )
 #Specify the path to save the figure
-data_path = os.path.join(current_dir, "figures", "figure4.html")
-fig.write_html(data_path)
+# data_path = os.path.join(current_dir, "figures", "figure4.html")
+# fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
+"""
 # - EXERCISE 6 - #
+
+Create a visualization that uses color as an important aesthetics
+"""
 # Filter to keep only 'Country' and year columns
 year_columns = [col for col in df.columns if col.isdigit()]
 filtered_df = df[['Country'] + year_columns]
@@ -231,22 +243,24 @@ fig.update_layout(
 )
 
 #Specify the path to save the figure
-data_path = os.path.join(current_dir, "figures", "figure6.html")
-fig.write_html(data_path)
+# data_path = os.path.join(current_dir, "figures", "figure6.html")
+# fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
+"""
 # - EXERCISE 7 - #
-# Explicit new data path 
-data_path = os.path.join(current_dir, "datasets", "API_EG.FEC.RNEW.ZS_DS2_en_csv_v2_3673.csv")
 
+Create a visualization that rigorously maximizes Tufte’s "data-ink ratio"
+"""
 # Import dataset 
+data_path = os.path.join(current_dir, "datasets", "API_EG.FEC.RNEW.ZS_DS2_en_csv_v2_3673.csv")
 df = get_data(data_path, skiprows=4) # Skip first 4 rows that contains metadata
 
 # Print Check
-print(df.columns)
-print(df.head(5))
-print('\n \n')
+# print(df.columns)
+# print(df.head(5))
+# print('\n \n')
 
 # Filter for the 'World' observation and data from 1990 onwards
 world_data = df[df['Country Name'] == 'World']
@@ -302,8 +316,8 @@ fig.update_layout(
 fig.update_traces(marker=dict(opacity=0.9))
 
 #Specify the path to save the figure
-data_path = os.path.join(current_dir, "figures", "figure7.html")
-fig.write_html(data_path)
+# data_path = os.path.join(current_dir, "figures", "figure7.html")
+# fig.write_html(data_path)
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
@@ -319,16 +333,14 @@ the visualization as you download it from the AI assistant without any further p
 improving it. Document your conversation (screenshots!) in the appendix.
 """
 # NOTE: The following lines has been done by an exstensive use of ChatGPT.
-# Explicit new data path
-data_path = os.path.join(current_dir, "datasets", "willingness-climate-action.csv")
-
 # Import dataset
+data_path = os.path.join(current_dir, "datasets", "willingness-climate-action.csv")
 df = get_data(data_path)
 
 # Print Check
-print(df.columns)
-print(df.head(5))
-print('\n \n')
+# print(df.columns)
+# print(df.head(5))
+# print('\n \n')
 
 # Filter out rows with missing values
 df_cleaned = df.dropna()
@@ -348,5 +360,51 @@ fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
 #Specify the path to save the figure
-data_path = os.path.join(current_dir, "figures", "figure8.html")
+# data_path = os.path.join(current_dir, "figures", "figure8.html")
+# fig.write_html(data_path)
+
+
+"""
+# - EXERCISE 11 - # 
+
+Create one data map
+"""
+# Import dataset 
+data_path = os.path.join(current_dir, "datasets", "pm25-air-pollution.csv")
+df = get_data(data_path)
+
+# Print Check
+print(df.columns)
+print(df.head(5))
+print('\n \n')
+
+# Identify the latest year in the dataset
+latest_year = df['Year'].max()
+
+# Filter the DataFrame to include only rows from the latest year
+latest_year_df = df[df['Year'] == latest_year]
+
+# NOTE: The following lines has been done by an exstensive use of ChatGPT.
+# Corrected column name in the 'color' parameter
+fig = px.choropleth(
+    latest_year_df,
+    locations="Entity",               # Country names
+    locationmode="country names",     # Matches with country names
+    color="Concentrations of fine particulate matter (PM2.5) - Residence area type: Total",  # Correct column name
+    hover_name="Entity",              # Tooltip will display country name
+    color_continuous_scale="YlOrRd", # Yellow to Red color scale for intensity
+    title="Global PM2.5 Air Pollution Over Time by Country (μg/m³) - 2019"
+)
+
+# Update the layout for a cleaner appearance
+fig.update_layout(
+    geo=dict(showframe=False, showcoastlines=False, projection_type='equirectangular'),
+    coloraxis_colorbar=dict(title="PM2.5 Concentration (μg/m³)")
+)
+
+fig.show()
+# - CHATGPT CODE ENDS HERE - #
+
+#Specify the path to save the figure
+data_path = os.path.join(current_dir, "figures", "figure11.html")
 fig.write_html(data_path)
