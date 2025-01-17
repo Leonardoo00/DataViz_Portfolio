@@ -2,10 +2,17 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import os
+import kagglehub
 
-# Dynamically set the file path to the same directory as the script
+
+# Ensure directories exist
 current_dir = os.path.dirname(os.path.abspath(__file__))
+figures_dir = os.path.join(current_dir, "figures")
+images_dir = os.path.join(current_dir, "images")
+os.makedirs(figures_dir, exist_ok=True)
+os.makedirs(images_dir, exist_ok=True)
 
+# Function to import dataset 
 def get_data(data_path, skiprows=None):
     """
     Reads a CSV file and returns its contents as a DataFrame.
@@ -62,9 +69,13 @@ df_filtered = df[['Year', 'J-D']]
 # Following reference instructions to convert in Fahrenheit (deg-F)
 df_filtered['J-D'] = df_filtered['J-D']*1.8
 
+
+# Filter rows where Year is less than or equal to 2015
+df_filtered = df_filtered[df_filtered['Year'] <= 2015]
+
 # Plot the resulting dataframe with a correct y-axis scale
 # Plot using Plotly
-fig = px.line(df_filtered, x='Year', y='J-D', title='Annual Global Temperature Anomaly 1880-2015',
+fig = px.line(df_filtered, x='Year', y='J-D', title='Annual Global Temperature Anomaly 1880-2024',
               labels={'Year': 'Year', 'J-D': 'Temperature Anomaly (deg-F)'})
 
 # Update the line color to red
@@ -81,12 +92,18 @@ fig.add_shape(
 )
 
 fig.update_layout(template='plotly_white')
-#Specify the path to save the figure
-data_path = os.path.join(current_dir, "figures", "figure2.html")
-fig.write_html(data_path)
+
+# # Save as HTML
+# html_path = os.path.join(figures_dir, "figure2.html")
+# fig.write_html(html_path)
+
+# # Save as PNG
+# png_path = os.path.join(images_dir, "figure2.png")
+# fig.write_image(png_path)
+
 fig.show()
 
-exit()
+
 """
 # - EXERCISE 3 - #
 Find a particularly good visualization and write a 100-150 word critique of it.
@@ -103,6 +120,8 @@ Create a viz about climate change for use in social media and write a hypothetic
 post to accompany this viz.
 
 Create a black-and-white visualization (no grey levels)
+
+Reference: https://web.archive.org/web/20160121070318/https://twitter.com/NRO/status/676516015078039556
 """
 # Import dataset 
 data_path = os.path.join(current_dir, "datasets", "Indicator_3_1_Climate_Indicators_Annual_Mean_Global_Surface_Temperature_577579683071085080.csv")
@@ -115,8 +134,9 @@ df = get_data(data_path)
 # Filter for the 'World' series
 df_world = df[df['Country'] == 'World']
 
-# Keep only the 'Country' column and all number columns (years)
-year_columns = [col for col in df_world.columns if col.isdigit()]
+# Keep only the 'Country' column and all number columns (years) bigger than 1980
+# NOTE: these dates has been choose for focusing on latest trend (modern economy)
+year_columns = [col for col in df_world.columns if col.isdigit() and int(col) >= 1980]
 final_df = df_world[['Country'] + year_columns]
 
 # Check for NaN values
@@ -144,12 +164,24 @@ fig.update_layout(
     yaxis_title='Temperature Change (°C)',
     template='plotly_white',
     xaxis=dict(tickmode='linear', dtick=5),  # Better scale on x-axis with 5-year intervals
-    yaxis=dict(tickformat=".2f")             # Format y-axis for two decimal points
+    yaxis=dict(tickformat=".2f", range=[-1, 2])  # Set y-axis scale from -1 to +2 NOTE: same as figure 1/2
 )
 
-#Specify the path to save the figure
-# data_path = os.path.join(current_dir, "figures", "figure4.html")
-# fig.write_html(data_path)
+# Add margins to prevent axis overlap otherwise is bit a mess
+fig.update_layout(
+    margin=dict(l=80, r=40, t=60, b=80),  # Increase margins for better spacing
+    xaxis=dict(tickmode='linear', dtick=5, zeroline=False, range=[1979.5, max(year_columns_int)]),  # Add space between x-axis and title
+    yaxis=dict(tickformat=".2f", range=[-1, 2], zeroline=False, title_standoff=20)  # Add space between y-axis and title
+)
+
+# # Save as HTML
+# html_path = os.path.join(figures_dir, "figure4.html")
+# fig.write_html(html_path)
+
+# # Save as PNG
+# png_path = os.path.join(images_dir, "figure4.png")
+# fig.write_image(png_path)
+
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
@@ -157,6 +189,8 @@ fig.show()
 # - EXERCISE 6 - #
 
 Create a visualization that uses color as an important aesthetics
+
+Reference: https://climatedata.imf.org/datasets/4063314923d74187be9596f10d034914/explore
 """
 # Filter to keep only 'Country' and year columns
 year_columns = [col for col in df.columns if col.isdigit()]
@@ -190,9 +224,14 @@ fig.update_layout(
     coloraxis_colorbar=dict(title="Temperature Change (°C)")
 )
 
-#Specify the path to save the figure
-# data_path = os.path.join(current_dir, "figures", "figure6.html")
-# fig.write_html(data_path)
+# # Save as HTML
+# html_path = os.path.join(figures_dir, "figure6.html")
+# fig.write_html(html_path)
+
+# # Save as PNG
+# png_path = os.path.join(images_dir, "figure6.png")
+# fig.write_image(png_path)
+
 fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
@@ -200,6 +239,8 @@ fig.show()
 # - EXERCISE 7 - #
 
 Create a visualization that rigorously maximizes Tufte’s "data-ink ratio".
+
+Reference: https://data.worldbank.org/indicator/EG.FEC.RNEW.ZS
 """
 # Import dataset 
 data_path = os.path.join(current_dir, "datasets", "API_EG.FEC.RNEW.ZS_DS2_en_csv_v2_3673.csv")
@@ -263,16 +304,21 @@ fig.update_layout(
 # Simplify bar appearance
 fig.update_traces(marker=dict(opacity=0.9))
 
-#Specify the path to save the figure
-# data_path = os.path.join(current_dir, "figures", "figure7.html")
-# fig.write_html(data_path)
+# # Save as HTML
+# html_path = os.path.join(figures_dir, "figure7.html")
+# fig.write_html(html_path)
+
+# # Save as PNG
+# png_path = os.path.join(images_dir, "figure7.png")
+# fig.write_image(png_path)
+
 fig.show()
+
 # - CHATGPT CODE ENDS HERE - #
 
 
 """
 # - EXERCISE 8/10 - # 
-
 8.Create a visualization that is none of the following: map, bar chart, scatter plot, pie chart,
 doughnut chart, line chart, box plot, density plot, histogram
 
@@ -304,20 +350,27 @@ fig = px.violin(df_cleaned,
                 labels={"Willingness to give 1% of income": "Willingness to Give 1% of Income", 
                         "World regions according to OWID": "Region"})
 
-# Show the plot
-fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
-#Specify the path to save the figure
-# data_path = os.path.join(current_dir, "figures", "figure8.html")
-# fig.write_html(data_path)
+# # Save as HTML
+# html_path = os.path.join(figures_dir, "figure8.html")
+# fig.write_html(html_path)
 
+# # Save as PNG
+# png_path = os.path.join(images_dir, "figure8.png")
+# fig.write_image(png_path)
+
+# Show the plot
+fig.show()
 
 """
 # - EXERCISE 9 - # 
 
 Create one visualization by hand. Choose plain paper or graph paper and create your viz
 accordingly. Scan your viz using USI photocopiers or make a really good foto of it.
+
+https://www.kaggle.com/datasets/belayethossainds/renewable-energy-world-wide-19652022?select=03+modern-renewable-prod.csv
+
 """
 
 
@@ -361,19 +414,26 @@ fig.update_layout(
     geo=dict(showframe=False, showcoastlines=False, projection_type='equirectangular'),
     coloraxis_colorbar=dict(title="PM2.5 Concentration (μg/m³)")
 )
-
-fig.show()
 # - CHATGPT CODE ENDS HERE - #
 
-#Specify the path to save the figure
-data_path = os.path.join(current_dir, "figures", "figure11.html")
-fig.write_html(data_path)
+# # Save as HTML
+# html_path = os.path.join(figures_dir, "figure11.html")
+# fig.write_html(html_path)
+
+# # Save as PNG
+# png_path = os.path.join(images_dir, "figure11.png")
+# fig.write_image(png_path)
+
+fig.show()
+
 
 
 
 """
 # - EXERCISE 14 - #
 Optional: Additional visualizations created by you.
+
+Reference: https://ourworldindata.org/grapher/energy-consumption-by-source-and-country
 """
 # Import dataset 
 data_path = os.path.join(current_dir, "datasets", "energy-consumption-by-source-and-country.csv")
@@ -451,8 +511,14 @@ fig_major.update_layout(
 fig_major.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey', tickangle=45, ticks='outside')
 fig_major.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
 
-# data_path = os.path.join(current_dir, "figures", "figure2.html")
-# fig_major.write_html(data_path)
+# Save as HTML
+html_path = os.path.join(figures_dir, "figure14_01.html")
+fig_major.write_html(html_path)
+
+# Save as PNG
+png_path = os.path.join(images_dir, "figure14_01.png")
+fig_major.write_image(png_path)
+
 fig_major.show()
 
 # Plot 2: Energy Consumption by Minor Sources
@@ -487,8 +553,16 @@ fig_minor.update_layout(
 
 fig_minor.update_xaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey', tickangle=45, ticks='outside')
 fig_minor.update_yaxes(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
+# - CHATGPT CODE ENDS HERE - #
 
-# data_path = os.path.join(current_dir, "figures", "figure3.html")
-# fig_minor.write_html(data_path)
+# Save as HTML
+html_path = os.path.join(figures_dir, "figure14_02.html")
+fig_minor.write_html(html_path)
+
+# Save as PNG
+png_path = os.path.join(images_dir, "figure14_02.png")
+fig_minor.write_image(png_path)
+
 fig_minor.show()
 # - CHATGPT CODE ENDS HERE - #
+
